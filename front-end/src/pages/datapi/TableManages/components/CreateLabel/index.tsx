@@ -113,11 +113,10 @@ const CreateTag: FC<CreateTagProps> = ({}) => {
       getLabelInfo(curLabel);
     } else {
       // 新建, 要给位置赋值, 参阅 EditEnum 的注释
-      const folderId = curFolder
-        ? curFolder.type === 'FOLDER'
-          ? Number(curFolder.folderId)
-          : curFolder.parentId
-        : null;
+      let folderId = null;
+      if (curFolder) {
+        folderId = curFolder.type === 'FOLDER' ? Number(curFolder.folderId) : curFolder.parentId;
+      }
 
       form.setFieldsValue({ folderId });
     }
@@ -227,13 +226,16 @@ const CreateTag: FC<CreateTagProps> = ({}) => {
       }}
       onFinish={async (values) => {
         setLoading(true);
-        const params = {
+        const params: { [key: string]: any } = {
           labelParamType: TagToParamMap[values.labelTag],
         };
         for (let [key, value] of Object.entries(values)) {
           if (`${value}`) {
             params[key] = value;
           }
+        }
+        if (!params.folderId) {
+          params.folderId = 0;
         }
         // 当类型为枚举的时候, labelParamType为选择的enumCode
         if (values.enumCode) {

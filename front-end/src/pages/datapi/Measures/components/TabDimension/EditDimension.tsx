@@ -92,7 +92,7 @@ const EditDimension: ForwardRefRenderFunction<unknown, EditDimensionProps> = ({ 
       // form initial
       const values = {
         labelName: initial.labelName,
-        folderId: initial.folderId,
+        folderId: initial.folderId || null,
       };
       initial.labelAttributes?.forEach((labelAttribute) => {
         values[labelAttribute.attributeKey] = labelAttribute.attributeValue;

@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Button, Form, message, Modal, Space } from 'antd';
 import { useModel } from 'umi';
 import type { FC } from 'react';
-import styles from './index.less';
 
 import { createEnum, delEnum, getEnum } from '@/services/tablemanage';
 import { Enum } from '@/types/datapi';
@@ -49,7 +48,7 @@ const TabEnum: FC<TabEnumProps> = ({ initialMode = 'view', fileCode }) => {
       const values = form.getFieldsValue();
       const data = {
         enumName: values.enumName,
-        folderId: values.folderId,
+        folderId: values.folderId || 0,
         enumValues: values.enumValues.enums?.map((_: any) => ({
           enumValue: _.enumValue.value,
           valueCode: _.enumValue.code,

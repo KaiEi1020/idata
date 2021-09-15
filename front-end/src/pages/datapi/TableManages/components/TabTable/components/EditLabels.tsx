@@ -131,10 +131,15 @@ const EditLabels: ForwardRefRenderFunction<unknown, EditLabelsProps> = ({ form, 
     let folderId = null;
     if (initial) {
       folderId = initial.folderId?.toString();
-    } else if (curFolder) {
+      if (folderId === '0') {
+        folderId = null;
+      }
+    }
+    if (curFolder) {
       folderId = curFolder.type === 'FOLDER' ? curFolder.folderId : curFolder.parentId;
     }
     form.setFieldsValue({ folderId });
+    labelValues.current.set('folderId', folderId);
   }, [initial, curFolder]);
 
   // 单选

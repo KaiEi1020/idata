@@ -59,7 +59,7 @@ const TabTable: FC<TabTableProps> = ({ initialMode = 'view', fileCode }) => {
     label
       .validateFields()
       .then(() => {
-        let folderId = null;
+        let folderId = 0;
         let tableName = '';
         let tableLabels = [];
         let labels = refTable.current?.labels || new Map();

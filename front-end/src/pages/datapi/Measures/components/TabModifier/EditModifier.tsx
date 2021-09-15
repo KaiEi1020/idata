@@ -91,7 +91,7 @@ const ViewModifier: ForwardRefRenderFunction<unknown, ViewModifierProps> = ({ in
       // form initial
       const values = {
         labelName: initial.labelName,
-        folderId: initial.folderId,
+        folderId: initial.folderId || null,
       };
       initial.labelAttributes?.forEach((labelAttribute) => {
         values[labelAttribute.attributeKey] = labelAttribute.attributeValue;

@@ -39,6 +39,9 @@ const EditEnum: FC<EditEnumProps> = ({ form, data }) => {
     let folderId = null;
     if (data) {
       folderId = data.folderId?.toString();
+      if (folderId === '0') {
+        folderId = null;
+      }
     } else if (curFolder) {
       folderId = curFolder.type === 'FOLDER' ? curFolder.folderId : curFolder.parentId;
     }

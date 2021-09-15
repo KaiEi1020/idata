@@ -65,7 +65,7 @@ const TabMetric: FC<TabMetricProps> = ({ initialMode = 'view', tabKey, fileCode 
     }
     const params = {
       labelName: form.labelName,
-      folderId: form.folderId,
+      folderId: form.folderId || 0,
       subjectType: 'COLUMN',
       labelTag: 'DIMENSION_LABEL',
       labelAttributes,

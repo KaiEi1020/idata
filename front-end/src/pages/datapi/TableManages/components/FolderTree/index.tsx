@@ -243,6 +243,7 @@ const FolderTree: FC = () => {
             setCurFolder({ ...node, folderId, parentId });
           }}
           onSelect={(selectedKeys, { node }) => {
+            setCurFolder(null);
             const _: any = node;
             _.type !== 'FOLDER' && onViewTree(node);
           }}
