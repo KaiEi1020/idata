@@ -136,6 +136,7 @@ public class DimensionServiceImpl implements DimensionService {
     @Transactional(rollbackFor = Throwable.class)
     public MeasureDto create(MeasureDto dimension, String operator) {
         checkArgument(isNotEmpty(operator), "创建者不能为空");
+        checkArgument(dimension.getFolderId() != null && dimension.getFolderId() >= 0, "维度文件夹ID为空或不合法");
         checkArgument(isNotEmpty(dimension.getLabelName()), "维度名称不能为空");
         checkArgument(isNotEmpty(dimension.getLabelTag()), "类型不能为空");
         DevLabelDefine checkDimension = devLabelDefineDao.selectOne(c -> c.where(devLabelDefine.del, isNotEqualTo(1),
@@ -186,7 +187,10 @@ public class DimensionServiceImpl implements DimensionService {
         List<LabelDto> dimensionLabelList = dimension.getMeasureLabels() != null && dimension.getMeasureLabels().size() > 0
                 ? dimension.getMeasureLabels() : null;
         dimension.setMeasureLabels(null);
-        PojoUtil.copyTo(dimension, existDimension, "labelName", "labelAttributes", "specialAttribute", "folderId");
+        PojoUtil.copyTo(dimension, existDimension, "labelName", "labelAttributes", "specialAttribute");
+        if (dimension.getFolderId() != null && dimension.getFolderId() >= 0 && !dimension.getFolderId().equals(existDimension.getFolderId())) {
+            existDimension.setFolderId(dimension.getFolderId());
+        }
         MeasureDto echoDimension = PojoUtil.copyOne(labelService.defineLabel(PojoUtil.copyOne(existDimension, LabelDefineDto.class), operator),
                 MeasureDto.class);
         if (dimensionLabelList != null) {

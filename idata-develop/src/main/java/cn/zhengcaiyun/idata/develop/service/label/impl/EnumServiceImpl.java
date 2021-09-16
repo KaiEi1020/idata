@@ -66,6 +66,7 @@ public class EnumServiceImpl implements EnumService {
     public EnumDto createOrEdit(EnumDto enumDto, String operator) {
         if (enumDto.getEnumCode() == null) {
             checkArgument(enumDto.getEnumName() != null, "enumName不能为空");
+            checkArgument(enumDto.getFolderId() != null && enumDto.getFolderId() >= 0, "文件夹ID为空或不合法");
             enumDto.setEnumCode(RandomUtil.randomStr(10) + ":ENUM");
             enumDto.setCreator(operator);
             devEnumDao.insertSelective(PojoUtil.copyOne(enumDto, DevEnum.class,
@@ -83,6 +84,12 @@ public class EnumServiceImpl implements EnumService {
                     .orElseThrow(() -> new IllegalArgumentException("enumCode不存在, " + enumDto.getEnumCode()));
             enumDto.setId(enumRecord.getId());
             enumDto.setEditor(operator);
+            if (enumDto.getFolderId() == null) {
+                enumDto.setFolderId(enumRecord.getFolderId());
+            }
+            else {
+                checkArgument(enumDto.getFolderId() >= 0, "文件夹ID不合法");
+            }
             devEnumDao.updateByPrimaryKeySelective(PojoUtil.copyOne(enumDto, DevEnum.class,
                     "id", "editor", "enumName", "folderId"));
             if (enumDto.getEnumValues() != null) {

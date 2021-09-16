@@ -126,6 +126,7 @@ public class DevFolderServiceImpl implements DevFolderService {
     @Transactional(rollbackFor = Throwable.class)
     public DevelopFolderDto create(DevelopFolderDto developFolderDto, String operator) {
         checkArgument(isNotEmpty(operator), "创建者不能为空");
+        checkArgument(developFolderDto.getParentId() != null && developFolderDto.getParentId() >= 0, "父文件夹ID为空或不合法");
         checkArgument(isNotEmpty(developFolderDto.getFolderName()), "文件夹名不能为空");
         var builder = select(devFolder.allColumns()).from(devFolder).where(devFolder.del, isNotEqualTo(1))
                 .and(devFolder.folderName, isEqualTo(developFolderDto.getFolderName()));

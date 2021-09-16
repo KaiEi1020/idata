@@ -160,6 +160,7 @@ public class ModifierServiceImpl implements ModifierService {
     @Transactional(rollbackFor = Throwable.class)
     public MeasureDto create(MeasureDto modifier, String operator) {
         checkArgument(isNotEmpty(operator), "创建者不能为空");
+        checkArgument(modifier.getFolderId() != null && modifier.getFolderId() >= 0, "修饰词文件夹ID为空或不合法");
         checkArgument(isNotEmpty(modifier.getLabelName()), "修饰词名称不能为空");
         checkArgument(isNotEmpty(modifier.getLabelTag()), "类型不能为空");
         DevLabelDefine checkModifier = devLabelDefineDao.selectOne(c -> c.where(devLabelDefine.del, isNotEqualTo(1),
@@ -205,7 +206,10 @@ public class ModifierServiceImpl implements ModifierService {
 
         List<LabelDto> modifierLabelList = modifier.getMeasureLabels() != null && modifier.getMeasureLabels().size() > 0
                 ? modifier.getMeasureLabels() : null;
-        PojoUtil.copyTo(modifier, existModifier, "labelName", "labelAttributes", "folderId");
+        PojoUtil.copyTo(modifier, existModifier, "labelName", "labelAttributes");
+        if (modifier.getFolderId() != null && modifier.getFolderId() >= 0 && !modifier.getFolderId().equals(existModifier.getFolderId())) {
+            existModifier.setFolderId(modifier.getFolderId());
+        }
         MeasureDto echoDimension = PojoUtil.copyOne(labelService.defineLabel(PojoUtil.copyOne(existModifier, LabelDefineDto.class), operator),
                 MeasureDto.class);
         if (modifierLabelList != null) {

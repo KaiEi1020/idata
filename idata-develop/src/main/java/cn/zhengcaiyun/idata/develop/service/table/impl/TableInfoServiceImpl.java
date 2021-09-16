@@ -220,6 +220,7 @@ public class TableInfoServiceImpl implements TableInfoService {
     public TableInfoDto create(TableInfoDto tableInfoDto, String operator) {
         checkArgument(isNotEmpty(operator), "创建者不能为空");
         checkArgument(isNotEmpty(tableInfoDto.getTableName()), "表名称不能为空");
+        checkArgument(tableInfoDto.getFolderId() != null && tableInfoDto.getFolderId() >= 0, "文件夹ID为空或不合法");
         DevTableInfo checkTableInfo = devTableInfoDao.selectOne(c ->
                 c.where(devTableInfo.del, isNotEqualTo(1),
                         and(devTableInfo.tableName, isEqualTo(tableInfoDto.getTableName()))))
@@ -285,8 +286,13 @@ public class TableInfoServiceImpl implements TableInfoService {
 
         // 更新tableInfo表
         tableInfoDto.setEditor(operator);
-        DevTableInfo tableInfo = PojoUtil.copyOne(tableInfoDto, DevTableInfo.class, "id",
-                "tableName", "folderId", "editor");
+        DevTableInfo tableInfo = PojoUtil.copyOne(tableInfoDto, DevTableInfo.class, "id", "tableName", "editor");
+        if (tableInfoDto.getFolderId() != null && tableInfoDto.getFolderId() >= 0) {
+            tableInfo.setFolderId(tableInfoDto.getFolderId());
+        }
+        else {
+            tableInfo.setFolderId(checkTableInfo.getFolderId());
+        }
         devTableInfoDao.updateByPrimaryKeySelective(tableInfo);
         TableInfoDto echoTableInfoDto = PojoUtil.copyOne(devTableInfoDao.selectByPrimaryKey(tableInfo.getId()).get(),
                 TableInfoDto.class, tableInfoFields);

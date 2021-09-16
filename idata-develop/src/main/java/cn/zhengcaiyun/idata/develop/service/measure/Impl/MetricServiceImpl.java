@@ -156,6 +156,7 @@ public class MetricServiceImpl implements MetricService {
     @Transactional(rollbackFor = Throwable.class)
     public MeasureDto create(MeasureDto metric, String operator) {
         checkArgument(isNotEmpty(operator), "创建者不能为空");
+        checkArgument(metric.getFolderId() != null && metric.getFolderId() >= 0, "指标文件夹ID为空或不合法");
         checkArgument(isNotEmpty(metric.getLabelName()), "指标名称不能为空");
         checkArgument(isNotEmpty(metric.getLabelTag()), "类型不能为空");
         DevLabelDefine checkModifier = devLabelDefineDao.selectOne(c -> c.where(devLabelDefine.del, isNotEqualTo(1),

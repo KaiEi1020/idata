@@ -106,7 +106,7 @@ public class LabelServiceImpl implements LabelService {
                     || LabelTagEnum.COMPLEX_METRIC_LABEL.equals(labelTagEnum)) {
                 labelDefineDto.setLabelParamType(null);
             }
-            // TODO specialAttributes, folderId没有校验
+            // TODO specialAttributes没有校验
             if (labelDefineDto.getLabelAttributes() != null) {
                 labelDefineDto.getLabelAttributes().forEach(attributeDto -> {
                     checkArgument(attributeDto.getAttributeKey() != null, "attributeKey不能为空");
@@ -122,6 +122,7 @@ public class LabelServiceImpl implements LabelService {
                 });
             }
             checkArgument(labelDefineDto.getSubjectType() != null, "subjectType不能为空");
+            checkArgument(labelDefineDto.getFolderId() != null && labelDefineDto.getFolderId() >= 0, "标签文件夹ID为空或不合法");
             SubjectTypeEnum.valueOf(labelDefineDto.getSubjectType());
             // 标签作用域暂时不做，都是全局的
             labelDefineDto.setLabelScope(null);
@@ -151,10 +152,12 @@ public class LabelServiceImpl implements LabelService {
             else if (labelDefineDto.getLabelIndex() < 0) {
                 labelDefineDto.setLabelIndex(labelDefine.getLabelIndex());
             }
-            PojoUtil.copyTo(labelDefineDto, labelDefine, "labelName", "specialAttribute",
-                    "folderId", "labelAttributes", "labelIndex");
+            PojoUtil.copyTo(labelDefineDto, labelDefine, "labelName", "specialAttribute", "labelAttributes", "labelIndex");
             if (labelDefineDto.getLabelRequired() != null) {
                 labelDefine.setLabelRequired(labelDefineDto.getLabelRequired());
+            }
+            if (labelDefineDto.getFolderId() != null && labelDefineDto.getFolderId() >= 0 && !labelDefineDto.getFolderId().equals(labelDefine.getFolderId())) {
+                labelDefine.setFolderId(labelDefineDto.getFolderId());
             }
             labelDefine.setEditor(operator);
             labelDefine.setEditTime(new Timestamp(System.currentTimeMillis()));
