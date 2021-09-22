@@ -106,5 +106,5 @@ export async function getDDL(params: { tableId: any }) {
 }
 // 表 同步MetaBase
 export async function postSyncMetabase(params: { tableId: any }) {
-  return request(`p1/dev/syncMetabaseInfo/${params.tableId}`, { method: 'POST', params });
+  return request(`/api/p1/dev/syncMetabaseInfo/${params.tableId}`, { method: 'POST', params });
 }
